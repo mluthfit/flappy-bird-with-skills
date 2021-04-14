@@ -14,22 +14,22 @@ public class Bird : MonoBehaviour
     private float restartTime = 0f;
     private bool fixGoal;
 
-    // Skills
-    // 0 -> Invunerable
-    [SerializeField] KeyCode[] skill = { KeyCode.Q };
-    private bool[] isSkill = { false };
-    private float[] cooldown = { 30f };
-    private float firstCooldown;
+    /*************** Skills *******************/
 
     // Invunerable
+    [SerializeField] KeyCode skillInvunerable = KeyCode.Q;
+    private bool isInvunerable = false;
+    private float cooldownInvunerable = 30f;
+    private float initCooldownInvunerable;
     [SerializeField] GameObject obInvunerable;
+
+    /*****************************************/
 
     [SerializeField] float jumpForce = 200f;
     [SerializeField] int score = 0;
 
+    // User Interface
     public Text scoreText;
-
-    // UI
     public GameObject gameOver, invunerable, skillActive;
     private bool skillUI = false;
 
@@ -41,7 +41,7 @@ public class Bird : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
-        firstCooldown = cooldown[0];
+        initCooldownInvunerable = cooldownInvunerable;
     }
 
     void Update()
@@ -56,12 +56,12 @@ public class Bird : MonoBehaviour
                 anim.SetTrigger("Flap");
             }
 
-            if (!isSkill[0])
+            if (!isInvunerable)
             {
-                if (Input.GetKeyDown(skill[0]))
+                if (Input.GetKeyDown(skillInvunerable))
                 {
                     sprite.color = Color.red;
-                    isSkill[0] = true;
+                    isInvunerable = true;
                     invunerable.SetActive(true);
                     skillActive.SetActive(true);
                     skillUI = true;
@@ -70,20 +70,21 @@ public class Bird : MonoBehaviour
             } 
             else
             {
-                cooldown[0] -= Time.deltaTime;
-                invunerable.GetComponent<Text>().text = ((int)cooldown[0]).ToString();
-                if (cooldown[0] <= 0)
+                cooldownInvunerable -= Time.deltaTime;
+                invunerable.GetComponent<Text>().text = ((int)cooldownInvunerable).ToString();
+                if (cooldownInvunerable <= 0)
                 {
                     invunerable.SetActive(false);
                     sprite.color = Color.white;
-                    isSkill[0] = false;
-                    cooldown[0] = firstCooldown;
+                    isInvunerable = false;
+                    cooldownInvunerable = initCooldownInvunerable;
                     obInvunerable.SetActive(false);
-                }
+                    fixGoal = false;
+                } 
 
                 if (skillUI)
                 {
-                    if (cooldown[0] <= firstCooldown - 0.5f)
+                    if (cooldownInvunerable <= initCooldownInvunerable - 0.5f)
                     {
                         skillUI = false;
                         skillActive.SetActive(false);
@@ -95,10 +96,7 @@ public class Bird : MonoBehaviour
         else
         {
             restartTime += Time.deltaTime;
-            if (restartTime >= 2f)
-            {
-                SceneManager.LoadScene(1);
-            }
+            if (restartTime >= 2f) SceneManager.LoadScene(1);
         }
     }
 
@@ -109,29 +107,26 @@ public class Bird : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (!isDead)
-        {
-            goDead();
-        }
+        if (!isDead) goDead();
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Goal")
+        if (obInvunerable.activeSelf)
         {
-            if (fixGoal == false)
+            if (collision.gameObject.tag == "Goal")
             {
-                fixGoal = true;
-                
-                // Add a score
-                score++;
-                if (scoreText != null) scoreText.text = score.ToString();
-                if (onPoint != null) onPoint.Invoke();
+                if (fixGoal == false)
+                {
+                    fixGoal = true;
+                    incrementScore();
+                }
+                else fixGoal = false;
             }
-            else
-            {
-                fixGoal = false;
-            }
+        } 
+        else
+        {
+            incrementScore();
         }
     }
 
@@ -145,5 +140,12 @@ public class Bird : MonoBehaviour
         }
         if (onDead != null) onDead.Invoke();
         anim.SetTrigger("Die");
+    }
+
+    public void incrementScore()
+    {
+        score++;
+        if (scoreText != null) scoreText.text = score.ToString();
+        if (onPoint != null) onPoint.Invoke();
     }
 }
