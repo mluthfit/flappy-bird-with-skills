@@ -6,9 +6,11 @@ This repository is the first game i made in unity. I make flappy bird with addit
 
 ## Running The App
 
-- Play project in unity, and click "Start" button
-- Press "Space" to make bird do jump and press "Q" for active Invunerable skill
+- Play project in unity
+- After that, click "Start" button
+- To play the game, press "Space" to make bird do jump and press "Q" for active Invunerable skill
 - If bird died, the game will automatically restart in 2 seconds
+- To quit the project, click Play again in unity.
 
 ## Resource
 
