@@ -15,6 +15,7 @@ public class Bird : MonoBehaviour
     private bool fixGoal;
 
     /*************** Skills *******************/
+    private bool isSkill;
 
     // Invunerable
     [SerializeField] KeyCode skillInvunerable = KeyCode.Q;
@@ -23,6 +24,12 @@ public class Bird : MonoBehaviour
     private float initCooldownInvunerable;
     [SerializeField] GameObject obInvunerable;
 
+    // Ez Way
+    [SerializeField] KeyCode skillEzWay = KeyCode.W;
+    public bool isEzWay = false;
+    private float cooldownEzWay = 20f;
+    private float initCooldownEzWay;
+
     /*****************************************/
 
     [SerializeField] float jumpForce = 200f;
@@ -30,7 +37,7 @@ public class Bird : MonoBehaviour
 
     // User Interface
     public Text scoreText;
-    public GameObject gameOver, invunerable, skillActive;
+    public GameObject gameOver, countSkill, skillActive;
     private bool skillUI = false;
 
     [SerializeField] UnityEvent onJump, onDead, onPoint;
@@ -42,6 +49,7 @@ public class Bird : MonoBehaviour
         anim = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
         initCooldownInvunerable = cooldownInvunerable;
+        initCooldownEzWay = cooldownEzWay;
     }
 
     void Update()
@@ -56,42 +64,74 @@ public class Bird : MonoBehaviour
                 anim.SetTrigger("Flap");
             }
 
-            if (!isInvunerable)
+            if (!isSkill)
             {
                 if (Input.GetKeyDown(skillInvunerable))
                 {
                     sprite.color = Color.red;
                     isInvunerable = true;
-                    invunerable.SetActive(true);
+                    countSkill.SetActive(true);
                     skillActive.SetActive(true);
                     skillUI = true;
                     obInvunerable.SetActive(true);
+                    isSkill = true;
+                }
+                else if (Input.GetKeyDown(skillEzWay))
+                {
+                    isEzWay = true;
+                    skillUI = true;
+                    isSkill = true;
+                    countSkill.SetActive(true);
+                    skillActive.SetActive(true);
                 }
             } 
             else
             {
-                cooldownInvunerable -= Time.deltaTime;
-                invunerable.GetComponent<Text>().text = ((int)cooldownInvunerable).ToString();
-                if (cooldownInvunerable <= 0)
+                if (isInvunerable)
                 {
-                    invunerable.SetActive(false);
-                    sprite.color = Color.white;
-                    isInvunerable = false;
-                    cooldownInvunerable = initCooldownInvunerable;
-                    obInvunerable.SetActive(false);
-                    fixGoal = false;
-                } 
-
-                if (skillUI)
-                {
-                    if (cooldownInvunerable <= initCooldownInvunerable - 0.5f)
+                    cooldownInvunerable -= Time.deltaTime;
+                    countSkill.GetComponent<Text>().text = ((int)cooldownInvunerable).ToString();
+                    if (cooldownInvunerable <= 0)
                     {
-                        skillUI = false;
-                        skillActive.SetActive(false);
+                        countSkill.SetActive(false);
+                        sprite.color = Color.white;
+                        isInvunerable = false;
+                        cooldownInvunerable = initCooldownInvunerable;
+                        obInvunerable.SetActive(false);
+                        fixGoal = false;
+                        isSkill = false;
+                    }
+
+                    if (skillUI) {
+                        if (cooldownInvunerable <= initCooldownInvunerable - 0.5f)
+                        {
+                            skillUI = false;
+                            skillActive.SetActive(false);
+                        }
+                    } 
+                } 
+                else if (isEzWay)
+                {
+                    cooldownEzWay -= Time.deltaTime;
+                    countSkill.GetComponent<Text>().text = ((int)cooldownEzWay).ToString();
+                    if (cooldownEzWay <= 0)
+                    {
+                        countSkill.SetActive(false);
+                        isEzWay = false;
+                        cooldownEzWay = initCooldownEzWay;
+                        isSkill = false;
+                    }
+
+                    if (skillUI)
+                    {
+                        if (cooldownEzWay <= initCooldownEzWay - 0.5f)
+                        {
+                            skillUI = false;
+                            skillActive.SetActive(false);
+                        }
                     }
                 }
             }
-
         }
         else
         {
