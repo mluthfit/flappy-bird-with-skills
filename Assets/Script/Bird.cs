@@ -90,7 +90,7 @@ public class Bird : MonoBehaviour
                 if (isInvunerable)
                 {
                     cooldownInvunerable -= Time.deltaTime;
-                    countSkill.GetComponent<Text>().text = ((int)cooldownInvunerable).ToString();
+                    countSkill.GetComponent<Text>().text = ((int)cooldownInvunerable + 1).ToString();
                     if (cooldownInvunerable <= 0)
                     {
                         countSkill.SetActive(false);
@@ -113,7 +113,7 @@ public class Bird : MonoBehaviour
                 else if (isEzWay)
                 {
                     cooldownEzWay -= Time.deltaTime;
-                    countSkill.GetComponent<Text>().text = ((int)cooldownEzWay).ToString();
+                    countSkill.GetComponent<Text>().text = ((int)cooldownEzWay + 1).ToString();
                     if (cooldownEzWay <= 0)
                     {
                         countSkill.SetActive(false);
