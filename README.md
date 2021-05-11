@@ -10,6 +10,7 @@ This repository is the first game i made in unity. I make flappy bird with addit
 - After that, click "Start" button
 - To play the game, press "Space" to make bird do jump and you can use skills
 - If bird died, the game will automatically restart in 2 seconds
+- If you want to pause the game, press "Escape"
 - To quit the project, click Play again in unity
 
 ## Resource
@@ -20,3 +21,11 @@ This project uses assets from [Unity Store](https://assetstore.unity.com/package
 - Q - Invunerable
 - W - EZ Way
 - Coming soon...
+
+## Previews
+![Menu](./Image/Menu.PNG)
+![Normal](./Image/Normal.PNG)
+![Pause](./Image/Pause.PNG)
+![Invunerable](./Image/Invunerable.PNG)
+![Ez](./Image/Ez.PNG)
+![Dead](./Image/Dead.PNG)
